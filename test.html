@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Preview — Mumtaz Medical</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #7c2d12, #ea580c);
+      color: #fff;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 24px;
+    }
+    .card {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px; padding: 48px 36px;
+      max-width: 560px; width: 100%;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .emoji { font-size: 3.5rem; margin-bottom: 12px; }
+    h1 { font-size: 2.2rem; margin-bottom: 12px; }
+    p { font-size: 1.1rem; line-height: 1.85; opacity: 0.95; margin-bottom: 16px; }
+    .badge {
+      display: inline-block;
+      background: #fb923c; color: #431407;
+      font-weight: bold; padding: 8px 18px;
+      border-radius: 999px; font-size: 0.95rem;
+    }
+    .info {
+      margin-top: 24px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 14px; padding: 16px 20px;
+      font-size: 0.95rem; line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="emoji">🧪</div>
+    <h1>Test Preview Page</h1>
+    <p>
+      This is a <strong>demo page</strong> to show how the preview system works.
+      <br>This page has an <strong>orange theme</strong> for testing.
+    </p>
+    <span class="badge">✅ Preview System Working!</span>
+    <div class="info">
+      🔗 If you can see this page live,<br>
+      it means the <strong>branch preview system</strong> is working perfectly!<br><br>
+      📋 Branch: <strong>demo/test-preview</strong>
+    </div>
+  </div>
+</body>
+</html>
