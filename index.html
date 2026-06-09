@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mumtaz Medical — Branch Previews</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: #fff;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px; padding: 48px 36px;
+      max-width: 560px; width: 100%;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    h1 { font-size: 2rem; margin-bottom: 8px; }
+    p { opacity: 0.8; margin-bottom: 24px; }
+    .link {
+      display: block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px; padding: 16px 24px;
+      margin-bottom: 12px; color: #fff;
+      text-decoration: none; font-size: 1.1rem;
+      transition: background 0.2s;
+    }
+    .link:hover { background: rgba(255,255,255,0.25); }
+    .link span { opacity: 0.6; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🏥 Mumtaz Medical</h1>
+    <p>Branch Previews — click a branch to test</p>
+    <a class="link" href="main/about.html">🟢 main <span>(production)</span></a>
+    <a class="link" href="feature-agent1-about/about.html">🟢 feature/agent1-about <span>(preview)</span></a>
+  </div>
+</body>
+</html>
