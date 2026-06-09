@@ -1,0 +1,22 @@
+# Netlify configuration for Mumtaz Medical
+# This file tells Netlify how to build and deploy the site
+
+[build]
+  # No build step needed — static HTML site
+  command = ""
+  # Publish the root directory
+  publish = "."
+
+# Redirect root to index
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+# Custom headers for better performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=3600"
