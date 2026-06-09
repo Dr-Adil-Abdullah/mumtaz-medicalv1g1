@@ -25,7 +25,7 @@
       text-align: center;
     }
     h1 { font-size: 2rem; margin-bottom: 8px; }
-    p { opacity: 0.8; margin-bottom: 24px; }
+    p { opacity: 0.8; margin-bottom: 24px; font-size: 1.05rem; }
     .link {
       display: block;
       background: rgba(255,255,255,0.15);
@@ -33,18 +33,22 @@
       border-radius: 12px; padding: 16px 24px;
       margin-bottom: 12px; color: #fff;
       text-decoration: none; font-size: 1.1rem;
-      transition: background 0.2s;
+      transition: background 0.2s; text-align: left;
     }
     .link:hover { background: rgba(255,255,255,0.25); }
-    .link span { opacity: 0.6; font-size: 0.85rem; }
+    .link .branch-name { font-weight: bold; }
+    .link .pages { opacity: 0.6; font-size: 0.82rem; margin-top: 4px; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>🏥 Mumtaz Medical</h1>
-    <p>Branch Previews — click a branch to test</p>
-    <a class="link" href="main/about.html">🟢 main <span>(production)</span></a>
-    <a class="link" href="feature-agent1-about/about.html">🟢 feature/agent1-about <span>(preview)</span></a>
+    <div style="font-size:3rem;margin-bottom:12px">🏥</div>
+    <h1>Mumtaz Medical</h1>
+    <p>Branch Previews — click any branch to test it live</p>
+              <a class="link" href="fix-preview-copy-all-files/about.html">
+                <div class="branch-name">📦 fix-preview-copy-all-files</div>
+                <div class="pages">Pages: about.html index.html</div>
+              </a>
   </div>
 </body>
 </html>
