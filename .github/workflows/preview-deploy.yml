@@ -29,99 +29,88 @@ jobs:
           echo "name=$SAFE_NAME" >> $GITHUB_OUTPUT
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
-      - name: Prepare deploy folder
-        run: |
-          mkdir -p deploy_output/${{ steps.branch.outputs.name }}
-
-          # Copy ALL files from the branch into the subfolder
-          # Skip .git folder and the workflow file itself
-          rsync -a --exclude='.git' --exclude='.github' --exclude='deploy_output' ./ "deploy_output/${{ steps.branch.outputs.name }}/"
-
-      - name: Checkout gh-pages to get existing branches
+      - name: Fetch existing gh-pages
         run: |
           git fetch origin gh-pages || true
-          mkdir -p existing
+
+      - name: Copy MAIN branch to root (actual website)
+        if: steps.branch.outputs.branch == 'main'
+        run: |
+          mkdir -p deploy_output
+
+          # Copy main site files to ROOT of gh-pages
+          rsync -a --exclude='.git' --exclude='.github' --exclude='deploy_output' --exclude='github-guide.html' ./ deploy_output/
+
+      - name: Copy OTHER branches to subfolder (preview)
+        if: steps.branch.outputs.branch != 'main'
+        run: |
+          mkdir -p deploy_output
+
+          # Restore existing root files from gh-pages
           if git show origin/gh-pages:index.html > /dev/null 2>&1; then
-            git archive origin/gh-pages | tar -x -C existing
+            git archive origin/gh-pages -- index.html about.html README.md netlify.toml 2>/dev/null | tar -x -C deploy_output/ 2>/dev/null || true
           fi
 
-      - name: Build dynamic index page
+          # Copy branch files into subfolder
+          mkdir -p "deploy_output/preview-${{ steps.branch.outputs.name }}"
+          rsync -a --exclude='.git' --exclude='.github' --exclude='deploy_output' ./ "deploy_output/preview-${{ steps.branch.outputs.name }}/"
+
+      - name: Create preview index page
         run: |
-          cat > deploy_output/index.html << 'HTMLEOF'
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Mumtaz Medical — Branch Previews</title>
-            <style>
-              * { margin: 0; padding: 0; box-sizing: border-box; }
-              body {
-                font-family: 'Segoe UI', Tahoma, sans-serif;
-                background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-                color: #fff;
-                min-height: 100vh;
-                display: flex; flex-direction: column;
-                align-items: center; justify-content: center;
-                padding: 24px;
-              }
-              .card {
-                background: rgba(255,255,255,0.12);
-                backdrop-filter: blur(8px);
-                border: 1px solid rgba(255,255,255,0.25);
-                border-radius: 20px; padding: 48px 36px;
-                max-width: 560px; width: 100%;
-                box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-                text-align: center;
-              }
-              h1 { font-size: 2rem; margin-bottom: 8px; }
-              p { opacity: 0.8; margin-bottom: 24px; font-size: 1.05rem; }
-              .link {
-                display: block;
-                background: rgba(255,255,255,0.15);
-                border: 1px solid rgba(255,255,255,0.2);
-                border-radius: 12px; padding: 16px 24px;
-                margin-bottom: 12px; color: #fff;
-                text-decoration: none; font-size: 1.1rem;
-                transition: background 0.2s; text-align: left;
-              }
-              .link:hover { background: rgba(255,255,255,0.25); }
-              .link .branch-name { font-weight: bold; }
-              .link .pages { opacity: 0.6; font-size: 0.82rem; margin-top: 4px; }
-            </style>
-          </head>
-          <body>
-            <div class="card">
-              <div style="font-size:3rem;margin-bottom:12px">🏥</div>
-              <h1>Mumtaz Medical</h1>
-              <p>Branch Previews — click any branch to test it live</p>
+          # Only create index if it doesn't exist (from main)
+          if [ ! -f "deploy_output/index.html" ] || grep -q "Branch Previews" "deploy_output/index.html" 2>/dev/null; then
+
+            cat > deploy_output/previews.html << 'HTMLEOF'
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Mumtaz Medical — Branch Previews</title>
+              <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: 'Segoe UI', Tahoma, sans-serif;
+                  background: linear-gradient(135deg, #0f172a, #1e293b);
+                  color: #fff; min-height: 100vh;
+                  display: flex; flex-direction: column;
+                  align-items: center; justify-content: center; padding: 24px; }
+                .card { background: rgba(255,255,255,0.06); backdrop-filter: blur(8px);
+                  border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+                  padding: 48px 36px; max-width: 560px; width: 100%;
+                  box-shadow: 0 12px 40px rgba(0,0,0,0.3); text-align: center; }
+                h1 { font-size: 1.8rem; margin-bottom: 6px; }
+                .sub { opacity: 0.5; font-size: 0.9rem; margin-bottom: 24px; }
+                .link { display: block; background: rgba(255,255,255,0.08);
+                  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+                  padding: 16px 24px; margin-bottom: 10px; color: #fff;
+                  text-decoration: none; text-align: left; transition: all 0.2s; }
+                .link:hover { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); }
+                .link b { color: #4ade80; }
+                .link small { opacity: 0.5; }
+              </style>
+            </head>
+            <body><div class="card">
+              <div style="font-size:2.5rem;margin-bottom:10px">🏥</div>
+              <h1>Branch Previews</h1>
+              <p class="sub">Test branches before merging</p>
           HTMLEOF
 
-          # Find all branches in deploy_output and create links
-          for dir in deploy_output/*/; do
-            if [ -d "$dir" ]; then
-              BRANCH_FOLDER=$(basename "$dir")
-              # Find HTML files in this branch folder
-              HTML_FILES=$(find "$dir" -maxdepth 1 -name "*.html" -exec basename {} \; | sort)
-              LINK_ITEMS=""
-              for f in $HTML_FILES; do
-                LINK_ITEMS="$LINK_ITEMS $f"
-              done
-              if [ -n "$LINK_ITEMS" ]; then
-                FIRST_FILE=$(echo "$HTML_FILES" | head -1)
-                echo "              <a class=\"link\" href=\"${BRANCH_FOLDER}/${FIRST_FILE}\">" >> deploy_output/index.html
-                echo "                <div class=\"branch-name\">📦 ${BRANCH_FOLDER}</div>" >> deploy_output/index.html
-                echo "                <div class=\"pages\">Pages:${LINK_ITEMS}</div>" >> deploy_output/index.html
-                echo "              </a>" >> deploy_output/index.html
+            for dir in deploy_output/preview-*/; do
+              if [ -d "$dir" ]; then
+                FOLDER=$(basename "$dir")
+                BRANCH_NICE=$(echo "$FOLDER" | sed 's/preview-//' | sed 's/-/\//g')
+                FIRST_HTML=$(find "$dir" -maxdepth 1 -name "*.html" ! -name "github-guide.html" | sort | head -1 | xargs basename 2>/dev/null)
+                if [ -n "$FIRST_HTML" ]; then
+                  echo "              <a class=\"link\" href=\"${FOLDER}/${FIRST_HTML}\">📦 <b>${BRANCH_NICE}</b><br><small>${FIRST_HTML}</small></a>" >> deploy_output/previews.html
+                fi
               fi
-            fi
-          done
+            done
 
-          cat >> deploy_output/index.html << 'HTMLEOF'
-            </div>
-          </body>
-          </html>
-          HTMLEOF
+            cat >> deploy_output/previews.html << 'HTMLEOF'
+            </div></body></html>
+            HTMLEOF
+
+          fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -131,4 +120,4 @@ jobs:
           keep_files: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_message: "deploy preview for ${{ steps.branch.outputs.branch }}"
+          commit_message: "deploy: ${{ steps.branch.outputs.branch }}"
