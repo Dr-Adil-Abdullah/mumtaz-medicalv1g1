@@ -6,12 +6,12 @@ on:
       - '**'
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "pages-preview"
   cancel-in-progress: false
 
 jobs:
@@ -25,35 +25,24 @@ jobs:
         id: branch
         run: |
           BRANCH=${GITHUB_REF#refs/heads/}
-          # Convert branch name to folder-safe name
           SAFE_NAME=$(echo "$BRANCH" | sed 's/[^a-zA-Z0-9]/-/g')
           echo "name=$SAFE_NAME" >> $GITHUB_OUTPUT
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
-      - name: Checkout gh-pages branch (if exists)
-        run: |
-          git fetch origin gh-pages || true
-
       - name: Prepare deploy folder
         run: |
-          mkdir -p deploy_output
-          # Copy the current branch files into a subfolder named after the branch
-          mkdir -p "deploy_output/${{ steps.branch.outputs.name }}"
-          # Copy all files except .git and deploy_output itself
-          find . -maxdepth 1 \
-            ! -name '.' \
-            ! -name '.git' \
-            ! -name 'deploy_output' \
-            -exec cp -r {} "deploy_output/${{ steps.branch.outputs.name }}/" \;
+          mkdir -p deploy_output/${{ steps.branch.outputs.name }}
+          # Copy all site files into the branch subfolder
+          for item in about.html index.html netlify.toml; do
+            if [ -f "$item" ]; then
+              cp "$item" "deploy_output/${{ steps.branch.outputs.name }}/"
+            fi
+          done
 
-          # Create index page that lists all branches
-          cat > deploy_output/index.html << 'INDEXEOF'
-      - name: Create branch index
-        run: |
-          mkdir -p deploy_output
-          cat > deploy_output/index.html << 'EOF'
+          # Create index page listing all branches
+          cat > deploy_output/index.html << 'HTMLEOF'
           <!DOCTYPE html>
-          <html>
+          <html lang="en">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,55 +54,47 @@ jobs:
                 background: linear-gradient(135deg, #1e3a8a, #3b82f6);
                 color: #fff;
                 min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
+                display: flex; flex-direction: column;
+                align-items: center; justify-content: center;
                 padding: 24px;
               }
               .card {
                 background: rgba(255,255,255,0.12);
                 backdrop-filter: blur(8px);
                 border: 1px solid rgba(255,255,255,0.25);
-                border-radius: 20px;
-                padding: 48px 36px;
-                max-width: 560px;
-                width: 100%;
+                border-radius: 20px; padding: 48px 36px;
+                max-width: 560px; width: 100%;
                 box-shadow: 0 12px 40px rgba(0,0,0,0.3);
                 text-align: center;
               }
               h1 { font-size: 2rem; margin-bottom: 8px; }
               p { opacity: 0.8; margin-bottom: 24px; }
-              .branch-link {
+              .link {
                 display: block;
                 background: rgba(255,255,255,0.15);
                 border: 1px solid rgba(255,255,255,0.2);
-                border-radius: 12px;
-                padding: 16px 24px;
-                margin-bottom: 12px;
-                color: #fff;
-                text-decoration: none;
-                font-size: 1.1rem;
+                border-radius: 12px; padding: 16px 24px;
+                margin-bottom: 12px; color: #fff;
+                text-decoration: none; font-size: 1.1rem;
                 transition: background 0.2s;
               }
-              .branch-link:hover {
-                background: rgba(255,255,255,0.25);
-              }
-              .branch-link span { opacity: 0.6; font-size: 0.85rem; }
+              .link:hover { background: rgba(255,255,255,0.25); }
+              .link span { opacity: 0.6; font-size: 0.85rem; }
             </style>
           </head>
           <body>
             <div class="card">
               <h1>🏥 Mumtaz Medical</h1>
-              <p>Branch Previews — click a branch to preview</p>
-              <BRANCHES_PLACEHOLDER>
+              <p>Branch Previews — click a branch to test</p>
+              <a class="link" href="main/about.html">🟢 main <span>(production)</span></a>
+              <a class="link" href="feature-agent1-about/about.html">🟢 feature/agent1-about <span>(preview)</span></a>
             </div>
           </body>
           </html>
-          EOF
+          HTMLEOF
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./deploy_output
