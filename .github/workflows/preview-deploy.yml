@@ -32,14 +32,21 @@ jobs:
       - name: Prepare deploy folder
         run: |
           mkdir -p deploy_output/${{ steps.branch.outputs.name }}
-          # Copy all site files into the branch subfolder
-          for item in about.html index.html netlify.toml; do
-            if [ -f "$item" ]; then
-              cp "$item" "deploy_output/${{ steps.branch.outputs.name }}/"
-            fi
-          done
 
-          # Create index page listing all branches
+          # Copy ALL files from the branch into the subfolder
+          # Skip .git folder and the workflow file itself
+          rsync -a --exclude='.git' --exclude='.github' --exclude='deploy_output' ./ "deploy_output/${{ steps.branch.outputs.name }}/"
+
+      - name: Checkout gh-pages to get existing branches
+        run: |
+          git fetch origin gh-pages || true
+          mkdir -p existing
+          if git show origin/gh-pages:index.html > /dev/null 2>&1; then
+            git archive origin/gh-pages | tar -x -C existing
+          fi
+
+      - name: Build dynamic index page
+        run: |
           cat > deploy_output/index.html << 'HTMLEOF'
           <!DOCTYPE html>
           <html lang="en">
@@ -68,7 +75,7 @@ jobs:
                 text-align: center;
               }
               h1 { font-size: 2rem; margin-bottom: 8px; }
-              p { opacity: 0.8; margin-bottom: 24px; }
+              p { opacity: 0.8; margin-bottom: 24px; font-size: 1.05rem; }
               .link {
                 display: block;
                 background: rgba(255,255,255,0.15);
@@ -76,18 +83,41 @@ jobs:
                 border-radius: 12px; padding: 16px 24px;
                 margin-bottom: 12px; color: #fff;
                 text-decoration: none; font-size: 1.1rem;
-                transition: background 0.2s;
+                transition: background 0.2s; text-align: left;
               }
               .link:hover { background: rgba(255,255,255,0.25); }
-              .link span { opacity: 0.6; font-size: 0.85rem; }
+              .link .branch-name { font-weight: bold; }
+              .link .pages { opacity: 0.6; font-size: 0.82rem; margin-top: 4px; }
             </style>
           </head>
           <body>
             <div class="card">
-              <h1>🏥 Mumtaz Medical</h1>
-              <p>Branch Previews — click a branch to test</p>
-              <a class="link" href="main/about.html">🟢 main <span>(production)</span></a>
-              <a class="link" href="feature-agent1-about/about.html">🟢 feature/agent1-about <span>(preview)</span></a>
+              <div style="font-size:3rem;margin-bottom:12px">🏥</div>
+              <h1>Mumtaz Medical</h1>
+              <p>Branch Previews — click any branch to test it live</p>
+          HTMLEOF
+
+          # Find all branches in deploy_output and create links
+          for dir in deploy_output/*/; do
+            if [ -d "$dir" ]; then
+              BRANCH_FOLDER=$(basename "$dir")
+              # Find HTML files in this branch folder
+              HTML_FILES=$(find "$dir" -maxdepth 1 -name "*.html" -exec basename {} \; | sort)
+              LINK_ITEMS=""
+              for f in $HTML_FILES; do
+                LINK_ITEMS="$LINK_ITEMS $f"
+              done
+              if [ -n "$LINK_ITEMS" ]; then
+                FIRST_FILE=$(echo "$HTML_FILES" | head -1)
+                echo "              <a class=\"link\" href=\"${BRANCH_FOLDER}/${FIRST_FILE}\">" >> deploy_output/index.html
+                echo "                <div class=\"branch-name\">📦 ${BRANCH_FOLDER}</div>" >> deploy_output/index.html
+                echo "                <div class=\"pages\">Pages:${LINK_ITEMS}</div>" >> deploy_output/index.html
+                echo "              </a>" >> deploy_output/index.html
+              fi
+            fi
+          done
+
+          cat >> deploy_output/index.html << 'HTMLEOF'
             </div>
           </body>
           </html>
