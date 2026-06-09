@@ -11,7 +11,7 @@
 
     body {
       font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
-      background: #0a0f1a;
+      background: #150a24;
       color: #e2e8f0;
       min-height: 100vh;
       overflow-x: hidden;
@@ -20,14 +20,14 @@
     /* ─── Animated Background ─── */
     .bg-gradient {
       position: fixed; inset: 0; z-index: -2;
-      background: linear-gradient(135deg, #052e16 0%, #064e3b 30%, #0a2f1f 60%, #0d3320 100%);
+      background: linear-gradient(135deg, #2e1065 0%, #4c1d95 30%, #3b0764 60%, #4c1065 100%);
     }
     .bg-glow {
       position: fixed; z-index: -1; border-radius: 50%;
       filter: blur(120px); opacity: 0.3;
     }
-    .bg-glow-1 { width: 500px; height: 500px; background: #22c55e; top: -150px; right: -100px; }
-    .bg-glow-2 { width: 400px; height: 400px; background: #06b6d4; bottom: -100px; left: -80px; opacity: 0.15; }
+    .bg-glow-1 { width: 500px; height: 500px; background: #9333ea; top: -150px; right: -100px; }
+    .bg-glow-2 { width: 400px; height: 400px; background: #a855f7; bottom: -100px; left: -80px; opacity: 0.15; }
 
     /* ─── Top Navigation ─── */
     .topbar {
@@ -43,7 +43,7 @@
       font-size: 1.15rem; font-weight: 700; color: #fff;
     }
     .topbar-logo .icon { font-size: 1.5rem; }
-    .topbar-logo .highlight { color: #4ade80; }
+    .topbar-logo .highlight { color: #c084fc; }
     .topbar-links { display: flex; gap: 8px; }
     .topbar-links a {
       color: rgba(255,255,255,0.7); text-decoration: none;
@@ -51,7 +51,7 @@
       transition: all 0.2s;
     }
     .topbar-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
-    .topbar-links a.active { color: #4ade80; background: rgba(74,222,128,0.1); }
+    .topbar-links a.active { color: #c084fc; background: rgba(168, 85, 247,0.1); }
 
     /* ─── Sidebar ─── */
     .sidebar-toggle {
@@ -80,7 +80,7 @@
       display: flex; align-items: center; justify-content: space-between;
     }
     .sidebar-head .logo { font-size: 1.2rem; font-weight: 700; color: #fff; }
-    .sidebar-head .logo span { color: #4ade80; }
+    .sidebar-head .logo span { color: #c084fc; }
     .sidebar-close {
       width: 36px; height: 36px; border-radius: 8px;
       background: rgba(255,255,255,0.05); border: none;
@@ -102,10 +102,10 @@
       transition: all 0.2s;
     }
     .sidebar-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
-    .sidebar-item.active { background: rgba(74,222,128,0.12); color: #4ade80; }
+    .sidebar-item.active { background: rgba(168, 85, 247,0.12); color: #c084fc; }
     .sidebar-item .si-icon { font-size: 1.15rem; width: 24px; text-align: center; }
     .sidebar-item .si-badge {
-      margin-left: auto; background: rgba(74,222,128,0.15); color: #4ade80;
+      margin-left: auto; background: rgba(168, 85, 247,0.15); color: #c084fc;
       font-size: 0.7rem; padding: 2px 8px; border-radius: 99px; font-weight: 600;
     }
 
@@ -133,14 +133,14 @@
     }
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.2);
+      background: rgba(168, 85, 247,0.1); border: 1px solid rgba(168, 85, 247,0.2);
       padding: 6px 16px; border-radius: 99px;
-      font-size: 0.82rem; color: #4ade80; font-weight: 500;
+      font-size: 0.82rem; color: #c084fc; font-weight: 500;
       margin-bottom: 20px;
     }
     .hero-badge .dot {
       width: 6px; height: 6px; border-radius: 50%;
-      background: #4ade80; animation: pulse 2s infinite;
+      background: #c084fc; animation: pulse 2s infinite;
     }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
@@ -150,7 +150,7 @@
       font-size: 3rem; font-weight: 700; color: #fff;
       line-height: 1.15; margin-bottom: 16px;
     }
-    .hero h1 .green { color: #4ade80; }
+    .hero h1 .green { color: #c084fc; }
     .hero p {
       font-size: 1.15rem; line-height: 1.8; color: rgba(255,255,255,0.65);
       max-width: 600px; margin: 0 auto;
@@ -169,7 +169,7 @@
     }
     .gcard:hover {
       background: rgba(255,255,255,0.07);
-      border-color: rgba(74,222,128,0.2);
+      border-color: rgba(168, 85, 247,0.2);
       transform: translateY(-2px);
     }
     .gcard-icon { font-size: 2rem; margin-bottom: 14px; }
@@ -180,7 +180,7 @@
     .section { margin: 48px 0; }
     .section-tag {
       display: inline-block;
-      background: rgba(74,222,128,0.1); color: #4ade80;
+      background: rgba(168, 85, 247,0.1); color: #c084fc;
       padding: 4px 12px; border-radius: 6px;
       font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: 1px; margin-bottom: 12px;
@@ -204,8 +204,8 @@
       font-size: 0.92rem; transition: all 0.2s;
     }
     .vtag:hover {
-      background: rgba(74,222,128,0.08);
-      border-color: rgba(74,222,128,0.2);
+      background: rgba(168, 85, 247,0.08);
+      border-color: rgba(168, 85, 247,0.2);
     }
 
     /* Stats */
@@ -219,7 +219,7 @@
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 14px;
     }
-    .stat-num { font-size: 2.2rem; font-weight: 700; color: #4ade80; }
+    .stat-num { font-size: 2.2rem; font-weight: 700; color: #c084fc; }
     .stat-label { font-size: 0.82rem; color: rgba(255,255,255,0.45); margin-top: 4px; }
 
     /* Team */
@@ -233,10 +233,10 @@
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 14px; transition: all 0.2s;
     }
-    .team-card:hover { border-color: rgba(74,222,128,0.2); }
+    .team-card:hover { border-color: rgba(168, 85, 247,0.2); }
     .team-avatar {
       width: 56px; height: 56px; border-radius: 50%;
-      background: linear-gradient(135deg, #4ade80, #06b6d4);
+      background: linear-gradient(135deg, #c084fc, #a855f7);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.5rem; margin: 0 auto 12px;
     }
@@ -246,20 +246,20 @@
     /* CTA */
     .cta {
       text-align: center; padding: 48px 32px;
-      background: linear-gradient(135deg, rgba(74,222,128,0.08), rgba(6,182,212,0.06));
-      border: 1px solid rgba(74,222,128,0.15);
+      background: linear-gradient(135deg, rgba(168, 85, 247,0.08), rgba(168, 85, 247,0.06));
+      border: 1px solid rgba(168, 85, 247,0.15);
       border-radius: 20px; margin: 48px 0;
     }
     .cta h2 { font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
     .cta p { color: rgba(255,255,255,0.55); margin-bottom: 20px; }
     .cta-btn {
       display: inline-flex; align-items: center; gap: 8px;
-      background: #4ade80; color: #052e16;
+      background: #c084fc; color: #2e1065;
       padding: 12px 28px; border-radius: 12px;
       font-weight: 600; font-size: 0.95rem;
       text-decoration: none; transition: all 0.2s;
     }
-    .cta-btn:hover { background: #22c55e; transform: translateY(-1px); }
+    .cta-btn:hover { background: #9333ea; transform: translateY(-1px); }
 
     /* Footer */
     .footer {
